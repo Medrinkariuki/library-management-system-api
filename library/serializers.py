@@ -3,16 +3,7 @@ from .models import Book, Customer, BorrowRecord, BookRequest
 
 
 # ===============================
-# 1️⃣ Customer Serializer
-# ===============================
-class CustomerSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Customer
-        fields = '__all__'
-
-
-# ===============================
-# 2️⃣ Book Serializer
+# 📚 BOOK SERIALIZER
 # ===============================
 class BookSerializer(serializers.ModelSerializer):
     class Meta:
@@ -21,23 +12,54 @@ class BookSerializer(serializers.ModelSerializer):
 
 
 # ===============================
-# 3️⃣ Borrow Record Serializer
+# 👤 CUSTOMER SERIALIZER
+# ===============================
+class CustomerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Customer
+        fields = '__all__'
+
+
+# ===============================
+# 🔄 BORROW RECORD SERIALIZER
 # ===============================
 class BorrowRecordSerializer(serializers.ModelSerializer):
-    customer = serializers.StringRelatedField(read_only=True)
-    book = serializers.StringRelatedField(read_only=True)
+    book_title = serializers.CharField(source='book.title', read_only=True)
+    customer_name = serializers.CharField(source='customer.name', read_only=True)
+    is_overdue = serializers.SerializerMethodField()
 
     class Meta:
         model = BorrowRecord
-        fields = '__all__'
+        fields = [
+            'id',
+            'book',
+            'book_title',
+            'customer',
+            'customer_name',
+            'checkout_date',
+            'due_date',
+            'return_date',
+            'is_overdue',
+        ]
+
+    def get_is_overdue(self, obj):
+        return obj.is_overdue()
 
 
 # ===============================
-# 4️⃣ Book Request Serializer (NEW FEATURE 💡)
+# 📝 BOOK REQUEST SERIALIZER
 # ===============================
 class BookRequestSerializer(serializers.ModelSerializer):
-    customer = serializers.StringRelatedField(read_only=True)
+    customer_name = serializers.CharField(source='customer.name', read_only=True)
 
     class Meta:
         model = BookRequest
-        fields = '__all__'
+        fields = [
+            'id',
+            'customer',
+            'customer_name',
+            'title',
+            'author',
+            'fee',
+            'request_date',
+        ]
