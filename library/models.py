@@ -39,6 +39,8 @@ class BorrowRecord(models.Model):
     checkout_date = models.DateField(auto_now_add=True)
     due_date = models.DateField(default=timezone.now().date() + timedelta(days=14))
     return_date = models.DateField(null=True, blank=True)
+    borrow_date = models.DateField(auto_now_add=True)
+
 
     def is_overdue(self):
         """
